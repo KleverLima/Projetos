@@ -1,0 +1,100 @@
+object FrmFrameBarra: TFrmFrameBarra
+  Left = 0
+  Top = 0
+  Width = 455
+  Height = 50
+  Align = alTop
+  Constraints.MinHeight = 50
+  Color = clHotLight
+  ParentBackground = False
+  ParentColor = False
+  TabOrder = 0
+  OnResize = FrameResize
+  object Image3: TImage
+    Left = 0
+    Top = 0
+    Width = 455
+    Height = 50
+    Align = alClient
+    Center = True
+    Stretch = True
+    ExplicitLeft = -3
+    ExplicitTop = 3
+    ExplicitWidth = 451
+    ExplicitHeight = 33
+  end
+  object pnTitulo: TPanel
+    AlignWithMargins = True
+    Left = 3
+    Top = 3
+    Width = 449
+    Height = 44
+    Align = alClient
+    BevelKind = bkSoft
+    BevelOuter = bvNone
+    Color = clHotLight
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -12
+    Font.Name = 'Segoe UI'
+    Font.Style = []
+    ParentBackground = False
+    ParentFont = False
+    TabOrder = 0
+    object LblBarraTitulo: TLabel
+      AlignWithMargins = True
+      Left = 76
+      Top = 3
+      Width = 298
+      Height = 34
+      Margins.Left = 15
+      Margins.Right = 10
+      Align = alClient
+      Alignment = taCenter
+      AutoSize = False
+      Caption = '<titulo do m'#243'dulo>'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWhite
+      Font.Height = -19
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      GlowSize = 1
+      ParentFont = False
+      Transparent = True
+      Layout = tlCenter
+      OnDblClick = LblBarraTituloDblClick
+      ExplicitLeft = 71
+      ExplicitTop = 0
+      ExplicitWidth = 427
+      ExplicitHeight = 47
+    end
+    object Image1: TImage
+      AlignWithMargins = True
+      Left = 3
+      Top = 3
+      Width = 55
+      Height = 34
+      Align = alLeft
+      Center = True
+      Proportional = True
+      Transparent = True
+      ExplicitLeft = 1
+      ExplicitTop = 1
+      ExplicitHeight = 43
+    end
+    object Image2: TImage
+      AlignWithMargins = True
+      Left = 387
+      Top = 3
+      Width = 55
+      Height = 34
+      Align = alRight
+      Center = True
+      Proportional = True
+      Transparent = True
+      ExplicitLeft = 380
+      ExplicitTop = 1
+      ExplicitHeight = 43
+    end
+  end
+end
