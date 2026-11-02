@@ -1,0 +1,128 @@
+unit ULogin;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, UBase, StdCtrls, ExtCtrls, Buttons, jpeg, DB, DBClient, Grids,
+  DBGrids, JvExDBGrids, JvDBGrid, JvDBUltimGrid, ShellApi, IniFiles, Biblioteca;
+
+type
+  TFLogin = class(TFBase)
+    Label1: TLabel;
+    Label2: TLabel;
+    Image1: TImage;
+    BotaoConfirma: TBitBtn;
+    EditLogin: TEdit;
+    EditSenha: TEdit;
+    BotaoCancela: TBitBtn;
+    CDSEmpresaUsuario: TClientDataSet;
+    DSEmpresaUsuario: TDataSource;
+    CDSEmpresaUsuarioID_EMPRESA: TIntegerField;
+    CDSEmpresaUsuarioID_PESSOA: TIntegerField;
+    CDSEmpresaUsuarioRAZAO_SOCIAL: TStringField;
+    Grid: TJvDBUltimGrid;
+    procedure BotaoCancelaClick(Sender: TObject);
+    procedure BotaoConfirmaClick(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure FormShow(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure GridKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+  private
+    { Private declarations }
+    function DoLogin: Boolean;
+  public
+    { Public declarations }
+    Logado: Boolean;
+  end;
+
+var
+  FLogin: TFLogin;
+
+implementation
+
+uses ViewSessaoEmpresaController, EmpresaController;
+
+{$R *.dfm}
+{ TFLogin }
+
+procedure TFLogin.BotaoCancelaClick(Sender: TObject);
+begin
+  Application.Terminate;
+end;
+
+procedure TFLogin.BotaoConfirmaClick(Sender: TObject);
+begin
+  try
+    if DoLogin then
+    begin
+      Logado := True;
+
+      TViewSessaoEmpresaController.SetDataSet(CDSEmpresaUsuario);
+      TViewSessaoEmpresaController.Consulta('ID_PESSOA = ' + IntToStr(Sessao.Usuario.ColaboradorVO.IdPessoa), 0);
+
+      if CDSEmpresaUsuario.RecordCount > 1 then
+      begin
+        Self.Height := 335;
+        Self.Grid.SetFocus;
+      end
+      else
+      begin
+        Sessao.Empresa := TEmpresaController.EmpresaSessao('ID=' + CDSEmpresaUsuarioID_EMPRESA.AsString);
+        Sessao.IdEmpresa := Sessao.Empresa.Id;
+        Close;
+      end;
+    end
+    else
+    begin
+      Application.MessageBox('Não foi possível realizar o login.', 'Atenção', MB_OK + MB_ICONWARNING);
+      EditLogin.SetFocus;
+    end;
+  except
+  end;
+end;
+
+function TFLogin.DoLogin: Boolean;
+begin
+  try
+    if ExtractFileName(Application.ExeName) = 'T2TiAdministrativo.exe' then
+      Result := Sessao.AutenticaUsuarioAdm(EditLogin.Text, EditSenha.Text)
+    else
+      Result := Sessao.AutenticaUsuario(EditLogin.Text, EditSenha.Text);
+  except
+    Result := False;
+  end;
+end;
+
+procedure TFLogin.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  inherited;
+  CanClose := Logado;
+end;
+
+procedure TFLogin.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if Key = VK_F11 then
+    BotaoCancela.Click;
+  if Key = VK_F12 then
+    BotaoConfirma.Click;
+end;
+
+procedure TFLogin.FormShow(Sender: TObject);
+begin
+  inherited;
+  Logado := False;
+  EditLogin.SetFocus;
+end;
+
+procedure TFLogin.GridKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+  if key = VK_RETURN then
+  begin
+    Sessao.Empresa := TEmpresaController.EmpresaSessao('ID=' + CDSEmpresaUsuarioID_EMPRESA.AsString);
+    Sessao.IdEmpresa := Sessao.Empresa.Id;
+    Close;
+  end;
+end;
+
+end.

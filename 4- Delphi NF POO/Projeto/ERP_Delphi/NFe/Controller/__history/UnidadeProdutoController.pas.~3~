@@ -1,0 +1,54 @@
+unit UnidadeProdutoController;
+
+interface
+
+uses
+  Classes, Dialogs, SysUtils, DBClient, DB, Windows, Forms, Controller, Rtti, Atributos,
+  UnidadeProdutoVO, Generics.Collections;
+
+
+type
+  TUnidadeProdutoController = class(TController)
+  private
+    class var FDataSet: TClientDataSet;
+  public
+    class procedure Consulta(pFiltro: String; pPagina: Integer);
+    class function GetDataSet: TClientDataSet; override;
+    class procedure SetDataSet(pDataSet: TClientDataSet); override;
+  end;
+
+implementation
+
+uses UDataModule, T2TiORM;
+
+class procedure TUnidadeProdutoController.Consulta(pFiltro: String; pPagina: Integer);
+var
+  Retorno: TObjectList<TUnidadeProdutoVO>;
+begin
+  try
+    try
+      if Pos('ID=', pFiltro) > 0 then
+        Retorno := KGSLERPORM.Consultar<TUnidadeProdutoVO>(pFiltro, True, pPagina)
+      else
+        Retorno := KGSLERPORM.Consultar<TUnidadeProdutoVO>(pFiltro, False, pPagina);
+      if Assigned(Retorno) then
+        PopulaGrid<TUnidadeProdutoVO>(Retorno);
+    finally
+    end;
+  except
+    on E: Exception do
+      Application.MessageBox(PChar('Ocorreu um erro durante a consulta. Informe a mensagem ao Administrador do sistema.' + #13 + #13 + E.Message), 'Erro do sistema', MB_OK + MB_ICONERROR);
+  end;
+end;
+
+class function TUnidadeProdutoController.GetDataSet: TClientDataSet;
+begin
+  Result := FDataSet;
+end;
+
+class procedure TUnidadeProdutoController.SetDataSet(pDataSet: TClientDataSet);
+begin
+  FDataSet := pDataSet;
+end;
+
+end.

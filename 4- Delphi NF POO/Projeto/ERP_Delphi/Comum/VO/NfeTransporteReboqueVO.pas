@@ -1,0 +1,40 @@
+unit NfeTransporteReboqueVO;
+
+interface
+
+uses
+  VO, Atributos, Classes, Constantes, Generics.Collections, SysUtils;
+
+type
+  [TEntity]
+  [TTable('NFE_TRANSPORTE_REBOQUE')]
+  TNfeTransporteReboqueVO = class(TVO)
+  private
+    FID: Integer;
+    FID_NFE_TRANSPORTE: Integer;
+    FPLACA: String;
+    FUF: String;
+    FRNTC: String;
+
+  public 
+    [TId('ID')]
+    [TGeneratedValue(sAuto)]
+    [TFormatter(ftZerosAEsquerda, taCenter)]
+    property Id: Integer  read FID write FID;
+    [TColumn('ID_NFE_TRANSPORTE','Id Nfe Transporte',80,[ldGrid, ldLookup, ldCombobox], False)]
+    [TFormatter(ftZerosAEsquerda, taCenter)]
+    property IdNfeTransporte: Integer  read FID_NFE_TRANSPORTE write FID_NFE_TRANSPORTE;
+    [TColumn('PLACA','Placa',64,[ldGrid, ldLookup, ldCombobox], False)]
+    property Placa: String  read FPLACA write FPLACA;
+    [TColumn('UF','Uf',16,[ldGrid, ldLookup, ldCombobox], False)]
+    property Uf: String  read FUF write FUF;
+    [TColumn('RNTC','Rntc',160,[ldGrid, ldLookup, ldCombobox], False)]
+    property Rntc: String  read FRNTC write FRNTC;
+
+  end;
+
+implementation
+
+
+
+end.

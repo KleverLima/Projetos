@@ -1,0 +1,61 @@
+unit TributOperacaoFiscalVO;
+
+interface
+
+uses
+  VO, Atributos, Classes, Constantes, Generics.Collections, SysUtils, CfopVO;
+
+type
+  [TEntity]
+  [TTable('TRIBUT_OPERACAO_FISCAL')]
+  TTributOperacaoFiscalVO = class(TVO)
+  private
+    FID: Integer;
+    FID_EMPRESA: Integer;
+    FDESCRICAO: String;
+    FDESCRICAO_NA_NF: String;
+    FCFOP: Integer;
+    FOBSERVACAO: String;
+
+    FCfopDescricao: String;
+
+    FCfopVO: TCfopVO;
+
+  public
+    destructor Destroy; override;
+
+    [TId('ID')]
+    [TGeneratedValue(sAuto)]
+    [TFormatter(ftZerosAEsquerda, taCenter)]
+    property Id: Integer  read FID write FID;
+    [TColumn('ID_EMPRESA','Id Empresa',80,[], False)]
+    [TFormatter(ftZerosAEsquerda, taCenter)]
+    property IdEmpresa: Integer  read FID_EMPRESA write FID_EMPRESA;
+    [TColumn('DESCRICAO','Descricao',450,[ldGrid, ldLookup, ldCombobox], False)]
+    property Descricao: String  read FDESCRICAO write FDESCRICAO;
+    [TColumn('DESCRICAO_NA_NF','Descricao Na Nf',450,[ldGrid, ldLookup, ldCombobox], False)]
+    property DescricaoNaNf: String  read FDESCRICAO_NA_NF write FDESCRICAO_NA_NF;
+
+    [TColumn('CFOP','Cfop',80,[ldGrid, ldLookup, ldCombobox], False)]
+    [TFormatter(taCenter)]
+    property Cfop: Integer  read FCFOP write FCFOP;
+    [TColumn('CFOP.DESCRICAO', 'Descrição CFOP', 250, [ldGrid, ldLookup, ldComboBox], True, 'CFOP', 'CFOP', 'CFOP')]
+    property CfopDescricao: String read FCfopDescricao write FCfopDescricao;
+
+    [TColumn('OBSERVACAO','Observacao',450,[ldGrid, ldLookup, ldCombobox], False)]
+    property Observacao: String  read FOBSERVACAO write FOBSERVACAO;
+
+    [TAssociation(True, 'CFOP', 'CFOP', 'CFOP')]
+    property CfopVO: TCfopVO read FCfopVO write FCfopVO;
+  end;
+
+implementation
+
+destructor TTributOperacaoFiscalVO.Destroy;
+begin
+  if Assigned(FCfopVO) then
+    FCfopVO.Free;
+  inherited;
+end;
+
+end.

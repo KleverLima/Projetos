@@ -1,0 +1,64 @@
+unit FuncaoController;
+
+interface
+
+uses
+  Classes, Dialogs, SysUtils, DBClient, DB, Windows, Forms, Controller, Rtti, Atributos,
+  FuncaoVO, Generics.Collections;
+
+
+type
+  TFuncaoController = class(TController)
+  private
+    class var FDataSet: TClientDataSet;
+  public
+    class procedure Consulta(pFiltro: String; pPagina: Integer);
+    class function GetDataSet: TClientDataSet; override;
+    class procedure SetDataSet(pDataSet: TClientDataSet); override;
+    class function FuncoesUsuario: TObjectList<TFuncaoVO>;
+  end;
+
+implementation
+
+uses UDataModule, KGSLERP;
+
+class procedure TFuncaoController.Consulta(pFiltro: String; pPagina: Integer);
+var
+  Retorno: TObjectList<TFuncaoVO>;
+begin
+  try
+    try
+      if Pos('ID=', pFiltro) > 0 then
+        Retorno := KGSLERPORM.Consultar<TFuncaoVO>(pFiltro, True, pPagina)
+      else
+        Retorno := KGSLERPORM.Consultar<TFuncaoVO>(pFiltro, False, pPagina);
+      if Assigned(Retorno) then
+        PopulaGrid<TFuncaoVO>(Retorno);
+    finally
+    end;
+  except
+    on E: Exception do
+      Application.MessageBox(PChar('Ocorreu um erro durante a consulta. Informe a mensagem ao Administrador do sistema.' + #13 + #13 + E.Message), 'Erro do sistema', MB_OK + MB_ICONERROR);
+  end;
+end;
+
+class function TFuncaoController.FuncoesUsuario: TObjectList<TFuncaoVO>;
+begin
+  try
+    Result := KGSLERPORM.Consultar<TFuncaoVO>('ID>0', True, 0)
+  except
+    Result := Nil;
+  end;
+end;
+
+class function TFuncaoController.GetDataSet: TClientDataSet;
+begin
+  Result := FDataSet;
+end;
+
+class procedure TFuncaoController.SetDataSet(pDataSet: TClientDataSet);
+begin
+  FDataSet := pDataSet;
+end;
+
+end.
